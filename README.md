@@ -10,8 +10,9 @@
 | Layer            | Technology                            |
 | ---------------- | ------------------------------------- |
 | Language         | Java 21                               |
+| Frontend         | ?                                     |  
 | Framework        | Spring Boot 3.x                       |
-| Database         | PostgreSQL 17                           |
+| Database         | PostgreSQL 17                         |
 | ORM              | Spring Data JPA                       |
 | Payment          | Stripe Java                           |
 | Containerization | Docker                                |
