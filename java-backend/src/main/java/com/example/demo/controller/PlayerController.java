@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.mapper.PlayerDto;
+import com.example.demo.dto.PlayerDto;
 import com.example.demo.service.PlayerService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class PlayerController {
+
 
     private final PlayerService playerService;
 
@@ -26,9 +30,11 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/player/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllPlayers(@PathVariable String name){
+    public ResponseEntity<?> getPlayer(@PathVariable String name){
         List<PlayerDto> playersFound = playerService.searchPlayers(name);
-        return new ResponseEntity<>(playersFound, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(playersFound);
     }
 
 }
