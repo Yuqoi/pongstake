@@ -3,16 +3,16 @@
 
 ## Quick overview about project
 
-`pongstake` is a simple website that predicts ping-pong matches (currently from <ins>**WTT league**</ins>).
+`pongstake` is a simple **SaaS** website that predicts ping-pong matches (currently from <ins>**WTT league**</ins>). Simply pick your wanted matches -> pay for the result -> get pdf/email with results 
 
 ## Tech stack
 
 | Layer            | Technology                            |
 | ---------------- | ------------------------------------- |
-| Language         | Java 21                               |
-| Frontend         | ?                                     |  
-| Framework        | Spring Boot 3.x                       |
+| Backend          | Java 21 Spring boot 3.x               |
+| Frontend         | ?                                     |
 | Database         | PostgreSQL 17                         |
+| Caching          | Redis                                 |
 | ORM              | Spring Data JPA                       |
 | Payment          | Stripe Java                           |
 | Containerization | Docker                                |
@@ -76,6 +76,7 @@ Soon
 
 ## Contributing
 
+**!DM me anywhere so I can give you example pingpong predicting model and database!**
 See [CONTRIBUTE.md](docs/CONTRIBUTE.md) for guidelines on issues and pull requests. Please follow code style and add tests for new features.
 
 ## License
