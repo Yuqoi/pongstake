@@ -7,15 +7,16 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 public class StripeService {
 
 
+    private static final Logger log = LoggerFactory.getLogger(StripeService.class);
     @Value("${stripe.api.key}")
     private String apiKey;
 
@@ -49,7 +50,7 @@ public class StripeService {
         Session session = null;
         try {
             session = Session.create(params);
-            return StripeResponse.builder()
+            return new StripeResponse.Builder()
                     .status("SUCCESS")
                     .message("Payment session created")
                     .sessionId(session.getId())
