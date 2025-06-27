@@ -1,50 +1,40 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.dto.ChargeRequest;
-import com.example.demo.service.impl.StripeService;
+import com.example.demo.dto.OrderDto;
+import com.example.demo.model.Metadata;
+import com.example.demo.model.Order;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.types.Currency;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
+import com.example.demo.types.Status;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
 @RestController
-@RequestMapping("/product/v1")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class StripeController {
 
     @Autowired
-    private StripeService stripeService;
+    private OrderRepository orderRepository;
 
 
-    @PostMapping("/charge")
-    public String charge(ChargeRequest chargeRequest, Model model)
-            throws StripeException {
-        chargeRequest.setCurrency(Currency.EUR);
-        Charge charge = stripeService.charge(chargeRequest);
-        model.addAttribute("id", charge.getId());
-        model.addAttribute("status", charge.getStatus());
-        model.addAttribute("chargeId", charge.getId());
-        model.addAttribute("balance_transaction", charge.getBalanceTransaction());
-        return "result";
-    }
+    @PostMapping("/order")
+    public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto){
 
-    @ExceptionHandler(StripeException.class)
-    public String handleError(Model model, StripeException ex) {
-        model.addAttribute("error", ex.getMessage());
-        return "result";
+        orderRepository.save(new Order("ada", new Date(System.currentTimeMillis()), "aleksander@gmail.com", 5L, Currency.EUR, Status.WAITING,
+                new Metadata(List.of("olek"), List.of("pierd"), List.of("china"))));
+
+        return ResponseEntity.status(HttpStatus.OK).body("git");
     }
 
 
-//    @PostMapping("/checkout")
-//    public ResponseEntity<StripeResponse> checkoutProducts(@RequestBody ProductRequest productRequest){
-//
-//        StripeResponse stripeResponse = stripeService.checkoutProduct(productRequest);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(stripeResponse);
-//    }
 
 }
