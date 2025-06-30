@@ -2,15 +2,9 @@ package com.example.demo.dto;
 
 import com.example.demo.model.Metadata;
 import com.example.demo.types.Currency;
-import com.example.demo.types.Status;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 public class OrderDto {
 

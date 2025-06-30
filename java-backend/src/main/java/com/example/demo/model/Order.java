@@ -60,20 +60,28 @@ public class Order {
     private Metadata metadata;
 
     public Order() {}
-    public Order(String paymentId, Date date, String email, Long amount, Currency currency, Status status, Metadata metadata) {
+    public Order(Long id, String paymentId, Date date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata) {
+        this.id = id;
         this.paymentId = paymentId;
         this.date = date;
         this.email = email;
         this.amount = amount;
+        this.price = price;
         this.currency = currency;
         this.status = status;
         this.metadata = metadata;
     }
 
+    public Long getPrice() {
+        return price;
+    }
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
     public String getPaymentId() {
         return paymentId;
     }
-
     public void setPaymentId(String paymentId) {
         this.paymentId = paymentId;
     }
@@ -81,7 +89,6 @@ public class Order {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -89,7 +96,6 @@ public class Order {
     public Date getDate() {
         return date;
     }
-
     public void setDate(Date date) {
         this.date = date;
     }
@@ -97,7 +103,6 @@ public class Order {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -105,7 +110,6 @@ public class Order {
     public Long getAmount() {
         return amount;
     }
-
     public void setAmount(Long amount) {
         this.amount = amount;
     }
@@ -113,7 +117,6 @@ public class Order {
     public Currency getCurrency() {
         return currency;
     }
-
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
@@ -121,7 +124,6 @@ public class Order {
     public Status getStatus() {
         return status;
     }
-
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -129,7 +131,6 @@ public class Order {
     public Metadata getMetadata() {
         return metadata;
     }
-
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
