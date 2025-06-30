@@ -1,16 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.OrderDto;
-import com.example.demo.model.CheckoutSessionResponse;
+import com.example.demo.response.CheckoutSessionResponse;
 import com.example.demo.service.impl.CheckoutService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -19,9 +20,15 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class StripeController {
 
+    private static final Logger log = LoggerFactory.getLogger(StripeController.class);
+
     @Autowired
     private CheckoutService checkoutService;
 
+
+    /**
+     * TODO: Make /success/{SESSION_ID} so it will only work for valid session id's
+     */
     @GetMapping("/success")
     public String success(){
         return "success";
@@ -37,7 +44,6 @@ public class StripeController {
     @ResponseBody
     public Map<String, String> createCheckoutSession(@RequestBody OrderDto orderDto) throws StripeException {
         String sessionUrl = checkoutService.createCheckoutSession(orderDto);
-
         Map<String, String> response = new HashMap<>();
         response.put("checkoutUrl", sessionUrl);
         return response;
@@ -48,15 +54,13 @@ public class StripeController {
     @ResponseBody
     public CheckoutSessionResponse retrieveCheckoutSession(@PathVariable String sessionId) throws StripeException {
         Session session = checkoutService.retrieveCheckoutSession(sessionId);
-
-
         return new CheckoutSessionResponse(
                 session.getId(),
                 session.getPaymentStatus(),
                 session.getAmountTotal(),
                 session.getCurrency(),
                 session.getStatus(),
-                session.getCustomerEmail() != null ? session.getCustomerDetails().getEmail() : "N/A"
+                session.getCustomerDetails().getEmail()
         );
     }
 

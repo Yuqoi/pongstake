@@ -1,6 +1,4 @@
-package com.example.demo.model;
-
-import com.example.demo.types.Currency;
+package com.example.demo.response;
 
 public class CheckoutSessionResponse {
 
@@ -24,7 +22,6 @@ public class CheckoutSessionResponse {
     public String getSessionId() {
         return sessionId;
     }
-
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -32,7 +29,6 @@ public class CheckoutSessionResponse {
     public String getPaymentStatus() {
         return paymentStatus;
     }
-
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
@@ -40,7 +36,6 @@ public class CheckoutSessionResponse {
     public long getTotalAmount() {
         return totalAmount;
     }
-
     public void setTotalAmount(long totalAmount) {
         this.totalAmount = totalAmount;
     }
@@ -48,7 +43,6 @@ public class CheckoutSessionResponse {
     public String getCurrency() {
         return currency;
     }
-
     public void setCurrency(String currency) {
         this.currency = currency;
     }
@@ -56,7 +50,6 @@ public class CheckoutSessionResponse {
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
@@ -64,7 +57,6 @@ public class CheckoutSessionResponse {
     public String getCustomerEmail() {
         return customerEmail;
     }
-
     public void setCustomerEmail(String customerEmail) {
         this.customerEmail = customerEmail;
     }

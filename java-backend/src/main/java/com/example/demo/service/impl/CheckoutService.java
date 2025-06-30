@@ -3,17 +3,24 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.OrderDto;
 import com.example.demo.helpers.CalculateCost;
+import com.example.demo.model.Order;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PriceRepository;
+import com.example.demo.service.ICheckoutService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CheckoutService implements ICheckoutService {
 
+    private static final Logger log = LoggerFactory.getLogger(CheckoutService.class);
     @Value("${stripe.success.url}")
     String successUrl;
 
@@ -23,13 +30,15 @@ public class CheckoutService implements ICheckoutService {
     @Autowired
     private PriceRepository priceRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     @Override
     public String createCheckoutSession(OrderDto orderDto) throws StripeException {
-
         SessionCreateParams params = SessionCreateParams.builder()
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(successUrl)
+                .setSuccessUrl(successUrl + "/{CHECKOUT_SESSION_ID}")
                 .setCancelUrl(cancelUrl)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
                                 .setQuantity(1L)
@@ -39,13 +48,17 @@ public class CheckoutService implements ICheckoutService {
                                                 .setUnitAmount(CalculateCost.calculateCost(orderDto))
                                                 .setProductData(
                                                         SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                .setName("Prediction").build()
+                                                                .setName("Prediction Bundle").build()
                                                 ).build()
                                 ).build()
                 ).build();
 
-
         Session session = Session.create(params);
+
+        /**
+         * TODO: Save to db an order with status of waiting
+         */
+
         return session.getUrl();
     }
 

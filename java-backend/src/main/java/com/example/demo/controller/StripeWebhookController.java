@@ -25,16 +25,23 @@ public class StripeWebhookController {
     public Map<String, String> handleWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader){
         Map<String, String> response = new HashMap<>();
 
-        log.info("Received webhook payload: {}", payload);
+        log.info("Received webhook payload");
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, WEBHOOK_SECRET);
 
             if ("checkout.session.completed".equals(event.getType())){
+
                 Session session = (Session) event.getDataObjectDeserializer().getObject().get();
                 log.info("Payment successful for session id: {}", session.getId());
+
+                /**
+                 * TODO: Update data in db to completed
+                 */
+
                 response.put("status", "Payment Successful for Session ID: " + session.getId());
+
             }
-        }catch (Exception e){
+        } catch (Exception e){
             log.error("Webhook error: {}", e.getMessage());
             response.put("Error", "Webhook error: " + e.getMessage());
         }

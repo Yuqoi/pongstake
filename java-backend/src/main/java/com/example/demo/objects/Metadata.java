@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.objects;
 
 import java.util.List;
 
@@ -17,7 +17,6 @@ public class Metadata {
     public List<String> getPlayerX() {
         return playerX;
     }
-
     public void setPlayerX(List<String> playerX) {
         this.playerX = playerX;
     }
@@ -25,7 +24,6 @@ public class Metadata {
     public List<String> getPlayerY() {
         return playerY;
     }
-
     public void setPlayerY(List<String> playerY) {
         this.playerY = playerY;
     }
@@ -33,7 +31,6 @@ public class Metadata {
     public List<String> getCountry() {
         return country;
     }
-
     public void setCountry(List<String> country) {
         this.country = country;
     }

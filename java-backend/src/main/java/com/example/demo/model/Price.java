@@ -8,10 +8,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * TODO: Probably change later to record if it would be possible by any chance
- *
- *
  */
-
 
 @Entity
 @Table(name = "prices")

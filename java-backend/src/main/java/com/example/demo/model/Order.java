@@ -1,16 +1,15 @@
 package com.example.demo.model;
 
+import com.example.demo.objects.Metadata;
 import com.example.demo.types.Currency;
 import com.example.demo.types.Status;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.springframework.data.jpa.repository.Meta;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -134,4 +133,13 @@ public class Order {
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
+
+
+    static class Builder{
+
+
+
+    }
+
+
 }
