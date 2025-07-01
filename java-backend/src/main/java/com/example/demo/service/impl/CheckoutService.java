@@ -7,6 +7,7 @@ import com.example.demo.model.Order;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.service.ICheckoutService;
+import com.example.demo.types.Status;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class CheckoutService implements ICheckoutService {
@@ -35,9 +37,13 @@ public class CheckoutService implements ICheckoutService {
 
     @Override
     public String createCheckoutSession(OrderDto orderDto) throws StripeException {
+
+        Long totalAmount = CalculateCost.calculateCost(orderDto);
+
         SessionCreateParams params = SessionCreateParams.builder()
                 .setSuccessUrl(successUrl + "/{CHECKOUT_SESSION_ID}")
                 .setCancelUrl(cancelUrl)
+                .setCustomerEmail(orderDto.getEmail())
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
@@ -45,7 +51,7 @@ public class CheckoutService implements ICheckoutService {
                                 .setPriceData(
                                         SessionCreateParams.LineItem.PriceData.builder()
                                                 .setCurrency(orderDto.getCurrency().name())
-                                                .setUnitAmount(CalculateCost.calculateCost(orderDto))
+                                                .setUnitAmount(totalAmount)
                                                 .setProductData(
                                                         SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                                 .setName("Prediction Bundle").build()
@@ -54,6 +60,17 @@ public class CheckoutService implements ICheckoutService {
                 ).build();
 
         Session session = Session.create(params);
+
+        orderRepository.save(Order.builder()
+                .amount(orderDto.getAmount())
+                .price(session.getAmountTotal())
+                .metadata(orderDto.getMetadata())
+                .email(session.getCustomerEmail())
+                .currency(orderDto.getCurrency())
+                .status(Status.WAITING)
+                .paymentId(session.getId())
+                .build()
+        );
 
         /**
          * TODO: Save to db an order with status of waiting

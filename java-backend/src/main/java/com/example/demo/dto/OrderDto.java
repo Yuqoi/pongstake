@@ -3,9 +3,14 @@ package com.example.demo.dto;
 import com.example.demo.objects.Metadata;
 import com.example.demo.types.Currency;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class OrderDto {
+
+    @Email
+    @NotNull
+    private String email;
 
     @NotNull
     private Long amount;
@@ -17,10 +22,18 @@ public class OrderDto {
     private Metadata metadata;
 
     public OrderDto(){}
-    public OrderDto(Long amount, Currency currency, Metadata metadata) {
+    public OrderDto(String email, Long amount, Currency currency, Metadata metadata) {
+        this.email = email;
         this.amount = amount;
         this.currency = currency;
         this.metadata = metadata;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Long getAmount() {

@@ -6,12 +6,18 @@ import com.example.demo.types.Status;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -27,8 +33,8 @@ public class Order {
 
     @Column(name = "date")
     @NotNull
-    @DateTimeFormat
-    private Date date;
+    @CreatedDate
+    private LocalDateTime date;
 
     @Column(name = "email")
     @NotNull
@@ -58,8 +64,13 @@ public class Order {
     @JdbcTypeCode(SqlTypes.JSON)
     private Metadata metadata;
 
-    public Order() {}
-    public Order(Long id, String paymentId, Date date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata) {
+    @NotNull
+    @Value("false")
+    @Column(name = "email_sent")
+    private boolean emailSent;
+
+    private Order() {}
+    private Order(Long id, String paymentId, LocalDateTime date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata, boolean emailSent) {
         this.id = id;
         this.paymentId = paymentId;
         this.date = date;
@@ -69,6 +80,14 @@ public class Order {
         this.currency = currency;
         this.status = status;
         this.metadata = metadata;
+        this.emailSent = emailSent;
+    }
+
+    public boolean isEmailSent() {
+        return emailSent;
+    }
+    public void setEmailSent(boolean emailSent) {
+        this.emailSent = emailSent;
     }
 
     public Long getPrice() {
@@ -92,10 +111,10 @@ public class Order {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -134,11 +153,74 @@ public class Order {
         this.metadata = metadata;
     }
 
+    public static OrderBuilder builder() {
+        return new OrderBuilder();
+    }
 
-    static class Builder{
+    public static class OrderBuilder {
 
+        private Long id;
+        private String paymentId;
+        private LocalDateTime date;
+        private String email;
+        private Long amount;
+        private Long price;
+        private Currency currency;
+        private Status status;
+        private Metadata metadata;
+        private boolean emailSent;
 
+        public OrderBuilder id(Long id){
+            this.id = id;
+            return this;
+        }
 
+        public OrderBuilder emailSent(boolean emailSent){
+            this.emailSent = emailSent;
+            return this;
+        }
+
+        public OrderBuilder paymentId(String paymentId){
+            this.paymentId = paymentId;
+            return this;
+        }
+
+        public OrderBuilder date(LocalDateTime date){
+            this.date = date;
+            return this;
+        }
+
+        public OrderBuilder email(String email){
+            this.email = email;
+            return this;
+        }
+
+        public OrderBuilder amount(Long amount){
+            this.amount = amount;
+            return this;
+        }
+        public OrderBuilder price(Long price){
+            this.price = price;
+            return this;
+        }
+
+        public OrderBuilder currency(Currency currency){
+            this.currency = currency;
+            return this;
+        }
+
+        public OrderBuilder status(Status status){
+            this.status = status;
+            return this;
+        }
+        public OrderBuilder metadata(Metadata metadata){
+            this.metadata = metadata;
+            return this;
+        }
+
+        public Order build(){
+            return new Order(id,paymentId,date,email,amount,price,currency,status,metadata, emailSent);
+        }
     }
 
 
