@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 public class OrderDto {
 
+
     @Email
     @NotNull
     private String email;

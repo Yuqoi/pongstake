@@ -3,14 +3,17 @@ package com.example.demo.controller;
 import com.example.demo.dto.OrderDto;
 import com.example.demo.response.CheckoutSessionResponse;
 import com.example.demo.service.impl.CheckoutService;
+import com.example.demo.util.OrderDtoChecker;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,11 +45,16 @@ public class StripeController {
 
     @PostMapping("/create-session")
     @ResponseBody
-    public Map<String, String> createCheckoutSession(@RequestBody OrderDto orderDto) throws StripeException {
+    public ResponseEntity<?> createCheckoutSession(@Valid @RequestBody OrderDto orderDto) throws StripeException {
+        OrderDtoChecker.validateOrderDto(orderDto);
+
         String sessionUrl = checkoutService.createCheckoutSession(orderDto);
-        Map<String, String> response = new HashMap<>();
-        response.put("checkoutUrl", sessionUrl);
-        return response;
+
+        return ResponseEntity
+                .ok()
+                .body(
+                        Map.of("checkoutURL", sessionUrl)
+                );
     }
 
 

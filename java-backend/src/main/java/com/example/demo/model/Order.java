@@ -7,15 +7,12 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -222,6 +219,4 @@ public class Order {
             return new Order(id,paymentId,date,email,amount,price,currency,status,metadata, emailSent);
         }
     }
-
-
 }
