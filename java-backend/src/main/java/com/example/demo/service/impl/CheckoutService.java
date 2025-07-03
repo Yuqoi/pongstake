@@ -2,12 +2,14 @@ package com.example.demo.service.impl;
 
 
 import com.example.demo.dto.OrderDto;
+import com.example.demo.exceptions.ExpiredSessionNotFoundException;
 import com.example.demo.helpers.CalculateCost;
 import com.example.demo.model.Order;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.service.ICheckoutService;
 import com.example.demo.types.Status;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -72,10 +76,6 @@ public class CheckoutService implements ICheckoutService {
                 .build()
         );
 
-        /**
-         * TODO: Save to db an order with status of waiting
-         */
-
         return session.getUrl();
     }
 
@@ -86,8 +86,24 @@ public class CheckoutService implements ICheckoutService {
 
     @Override
     public Session expireCheckoutSession(String sessionId) throws StripeException {
-        Session session = Session.retrieve(sessionId);
-        return session.expire();
+        try{
+            Session session = Session.retrieve(sessionId);
+
+            Optional<Order> foundOrder = orderRepository.findByPaymentId(sessionId);
+            if ( foundOrder.isPresent() ) {
+                Order order = foundOrder.get();
+
+                order.setStatus(Status.FAILED);
+                orderRepository.saveAndFlush(order);
+
+                log.info("Expired Session for: {}, Setting payment as FAILED", order.getPaymentId());
+            }
+
+            return session.expire();
+
+        }catch (InvalidRequestException e){
+            throw new ExpiredSessionNotFoundException("Wrong Session ID, try antoher one");
+        }
     }
 
 

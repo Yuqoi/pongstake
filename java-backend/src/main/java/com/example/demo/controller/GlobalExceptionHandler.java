@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exceptions.ExpiredSessionNotFoundException;
 import com.example.demo.exceptions.InvalidEnumTypeException;
 import com.example.demo.exceptions.InvalidFieldsException;
 import org.springframework.http.ResponseEntity;
@@ -23,4 +24,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
     }
 
+    @ExceptionHandler(ExpiredSessionNotFoundException.class)
+    public ResponseEntity<?> handleExpiredSessionException(ExpiredSessionNotFoundException e) {
+        return ResponseEntity.badRequest().body(
+                Map.of("error", e.getMessage())
+        );
+    }
 }

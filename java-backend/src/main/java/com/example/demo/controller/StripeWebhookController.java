@@ -47,15 +47,19 @@ public class StripeWebhookController {
                         .get("id").getAsString();
 
 
-                Order foundOrder = orderRepository.findByPaymentId(sessionId);
-                foundOrder.setStatus(Status.COMPLETED);
+                Optional<Order> foundOrder = orderRepository.findByPaymentId(sessionId);
 
-                // Save and flush used for making sure that if error occurs it will update in database
-                orderRepository.saveAndFlush(foundOrder);
+                if (foundOrder.isPresent()){
+                    Order order = foundOrder.get();
 
-                log.info("Payment successful for session id: {}", sessionId);
+                    order.setStatus(Status.COMPLETED);
+                    orderRepository.saveAndFlush(order);
 
-                response.put("status", "Payment Successful for Session ID: " + sessionId);
+                    log.info("Payment successful for session id: {}", sessionId);
+                    response.put("status", "Payment Successful for Session ID: " + sessionId);
+                }else{
+                    response.put("status", "Payment not successful");
+                }
             }
         } catch (Exception e){
             log.error("Webhook error: {}", e.getMessage());

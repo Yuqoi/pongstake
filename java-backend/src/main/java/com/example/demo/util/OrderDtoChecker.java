@@ -10,18 +10,14 @@ public class OrderDtoChecker {
     /**
      * This class will check if given amount is equal to both playerX and playerY and country size
      * for ex playerX: ['x'], playerY: ['y'], country: ['z'] == 1 and amount == 1 so True
-     *
-     *  if not it will return an exception: InvalidFields
-     *
-     *  Also another method that will check valid fields of OrderDto
      */
 
 
     public static void validateOrderDto(OrderDto orderDto){
         checkEmail(orderDto.getEmail());
         checkAmount(orderDto.getAmount());
-        checkCurrency(orderDto.getCurrency());
         checkMetadataElements(orderDto.getMetadata());
+        checkIfElementsAreEqual(orderDto.getMetadata(), orderDto.getAmount());
     }
 
     private static void checkEmail(String email){
@@ -33,9 +29,6 @@ public class OrderDtoChecker {
         if (amount <= 0){
             throw new InvalidFieldsException("Proper Amount is required");
         }
-    }
-    private static void checkCurrency(Currency currency){
-//        Currency.findByName(currency.name());
     }
     private static void checkMetadataElements(Metadata metadata){
         if (metadata == null){
@@ -50,6 +43,9 @@ public class OrderDtoChecker {
         if (metadata.getCountry() == null || metadata.getCountry().isEmpty()){
             throw new InvalidFieldsException("Country is empty or null");
         }
+    }
+    private static void checkIfElementsAreEqual(Metadata metadata, long amount){
+
     }
 
 }
