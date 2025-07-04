@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.PlayerDto;
-import com.example.demo.service.impl.PlayerService;
+import com.example.demo.service.PlayerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
