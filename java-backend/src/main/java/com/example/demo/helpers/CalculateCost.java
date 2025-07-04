@@ -1,10 +1,9 @@
 package com.example.demo.helpers;
 
 import com.example.demo.dto.OrderDto;
-import com.example.demo.model.Order;
+
 import com.example.demo.model.Price;
 import com.example.demo.repository.PriceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

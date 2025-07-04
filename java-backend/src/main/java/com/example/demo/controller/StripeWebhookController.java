@@ -39,13 +39,12 @@ public class StripeWebhookController {
         log.info("Received webhook payload");
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, WEBHOOK_SECRET);
-            log.info("EVENT: {}",event.getType());
             if ("checkout.session.completed".equals(event.getType())){
+
                 String sessionId = event.getRawJsonObject()
                         .get("data").getAsJsonObject()
                         .get("object").getAsJsonObject()
                         .get("id").getAsString();
-
 
                 Optional<Order> foundOrder = orderRepository.findByPaymentId(sessionId);
 

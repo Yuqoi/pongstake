@@ -96,13 +96,13 @@ public class CheckoutService implements ICheckoutService {
                 order.setStatus(Status.FAILED);
                 orderRepository.saveAndFlush(order);
 
-                log.info("Expired Session for: {}, Setting payment as FAILED", order.getPaymentId());
+                log.info("Expired Session id: {}, Setting payment as FAILED", order.getPaymentId());
             }
 
             return session.expire();
 
         }catch (InvalidRequestException e){
-            throw new ExpiredSessionNotFoundException("Wrong Session ID, try antoher one");
+            throw new ExpiredSessionNotFoundException("Wrong Session ID, try another one");
         }
     }
 

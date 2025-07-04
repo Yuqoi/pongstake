@@ -74,13 +74,15 @@ public class StripeController {
 
     @PostMapping("/expire-session/{sessionId}")
     @ResponseBody
-    public  Map<String, String> expireSession(@PathVariable String sessionId) throws StripeException {
+    public ResponseEntity<?> expireSession(@PathVariable String sessionId) throws StripeException {
         Session expiredSession = checkoutService.expireCheckoutSession(sessionId);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("sessionId", expiredSession.getId());
-        response.put("status", expiredSession.getStatus());
-        return response;
+        return ResponseEntity.ok().body(
+                Map.of(
+                        "sessionId", expiredSession.getId(),
+                        "status", expiredSession.getStatus()
+                )
+        );
     }
 
 

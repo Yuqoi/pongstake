@@ -3,15 +3,8 @@ package com.example.demo.util;
 import com.example.demo.dto.OrderDto;
 import com.example.demo.exceptions.InvalidFieldsException;
 import com.example.demo.objects.Metadata;
-import com.example.demo.types.Currency;
 
 public class OrderDtoChecker {
-
-    /**
-     * This class will check if given amount is equal to both playerX and playerY and country size
-     * for ex playerX: ['x'], playerY: ['y'], country: ['z'] == 1 and amount == 1 so True
-     */
-
 
     public static void validateOrderDto(OrderDto orderDto){
         checkEmail(orderDto.getEmail());
@@ -45,7 +38,13 @@ public class OrderDtoChecker {
         }
     }
     private static void checkIfElementsAreEqual(Metadata metadata, long amount){
+        long playerXLength = metadata.getPlayerX().size();
+        long playerYLength = metadata.getPlayerY().size();
+        long countryLenght = metadata.getCountry().size();
 
+        if ((playerXLength != playerYLength) || (playerYLength != countryLenght) || (countryLenght != amount)){
+            throw new InvalidFieldsException("Metadata size doesnt match to amount!");
+        }
     }
 
 }

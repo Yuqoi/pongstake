@@ -1,5 +1,9 @@
 package com.example.demo.response;
 
+
+/**
+ * TODO: Maybe change status variable to enum Status ?
+ */
 public class CheckoutSessionResponse {
 
     private String sessionId;
