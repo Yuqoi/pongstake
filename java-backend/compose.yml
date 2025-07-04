@@ -1,5 +1,12 @@
+version: "3"
+
 services:
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    command: "listen --api-key ${STRIPE_SEC_KEY} --device-name ${STRIPE_DEVICE_NAME} --forward-to http://host.docker.internal:8080/stripe/webhook"
+    env_file:
+      - path: .env
