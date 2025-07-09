@@ -1,5 +1,7 @@
 package com.example.demo.objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class Metadata {

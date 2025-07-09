@@ -9,6 +9,7 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.service.ICheckoutService;
 import com.example.demo.types.Status;
+import com.example.demo.util.OrderKafkaSender;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -34,10 +35,19 @@ public class CheckoutService implements ICheckoutService {
     String cancelUrl;
 
     @Autowired
-    private PriceRepository priceRepository;
+    private final PriceRepository priceRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
+    @Autowired
+    private final OrderKafkaSender orderKafkaSender;
+
+    public CheckoutService(PriceRepository priceRepository, OrderRepository orderRepository, OrderKafkaSender orderKafkaSender) {
+        this.priceRepository = priceRepository;
+        this.orderRepository = orderRepository;
+        this.orderKafkaSender = orderKafkaSender;
+    }
 
     @Override
     public String createCheckoutSession(OrderDto orderDto) throws StripeException {
@@ -64,8 +74,7 @@ public class CheckoutService implements ICheckoutService {
                 ).build();
 
         Session session = Session.create(params);
-
-        orderRepository.save(Order.builder()
+        Order order = Order.builder()
                 .amount(orderDto.getAmount())
                 .price(session.getAmountTotal())
                 .metadata(orderDto.getMetadata())
@@ -73,8 +82,11 @@ public class CheckoutService implements ICheckoutService {
                 .currency(orderDto.getCurrency())
                 .status(Status.WAITING)
                 .paymentId(session.getId())
-                .build()
-        );
+                .build();
+
+        orderRepository.save(order);
+        String result = orderKafkaSender.send(order);
+        log.info("RESULT: {}", result);
 
         return session.getUrl();
     }

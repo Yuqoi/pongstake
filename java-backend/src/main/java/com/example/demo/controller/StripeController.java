@@ -4,6 +4,7 @@ import com.example.demo.dto.OrderDto;
 import com.example.demo.response.CheckoutSessionResponse;
 import com.example.demo.service.impl.CheckoutService;
 import com.example.demo.util.OrderDtoChecker;
+import com.example.demo.util.OrderKafkaSender;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import org.slf4j.Logger;
