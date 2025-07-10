@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.OrderDto;
 import com.example.demo.objects.Metadata;
-import com.example.demo.repository.PlayerRepository;
 import com.example.demo.request.OrderRequest;
 import com.example.demo.response.CheckoutSessionResponse;
 import com.example.demo.service.impl.CheckoutService;
@@ -17,11 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/stripe")
@@ -63,12 +61,10 @@ public class StripeController {
     public ResponseEntity<?> createCheckoutSession(@Valid @RequestBody OrderRequest orderRequest) throws StripeException {
         OrderDtoChecker.validateOrderDto(orderRequest);
 
-        // TODO: if correct then change MetadataRequest to Metadata with corresponding id
         List<Long> playerXIds = playerService.searchPlayerAndReturnId(orderRequest.getMetadata().getPlayerX());
         List<Long> playerYIds = playerService.searchPlayerAndReturnId(orderRequest.getMetadata().getPlayerY());
         List<Long> countriesIds = countryService.getCountryIds(orderRequest.getMetadata().getCountry());
 
-        log.info("{} \n {} \n {}", playerXIds, playerXIds, countriesIds);
         OrderDto orderDto = new OrderDto(
                 orderRequest.getEmail(),
                 orderRequest.getAmount(),

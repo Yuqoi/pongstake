@@ -64,13 +64,9 @@ public class Order {
     @JdbcTypeCode(SqlTypes.JSON)
     private Metadata metadata;
 
-    @NotNull
-    @Value("false")
-    @Column(name = "email_sent")
-    private boolean emailSent;
 
     private Order() {}
-    private Order(Long id, String paymentId, LocalDateTime date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata, boolean emailSent) {
+    private Order(Long id, String paymentId, LocalDateTime date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata) {
         this.id = id;
         this.paymentId = paymentId;
         this.date = date;
@@ -80,14 +76,6 @@ public class Order {
         this.currency = currency;
         this.status = status;
         this.metadata = metadata;
-        this.emailSent = emailSent;
-    }
-
-    public boolean isEmailSent() {
-        return emailSent;
-    }
-    public void setEmailSent(boolean emailSent) {
-        this.emailSent = emailSent;
     }
 
     public Long getPrice() {
@@ -168,15 +156,9 @@ public class Order {
         private Currency currency;
         private Status status;
         private Metadata metadata;
-        private boolean emailSent;
 
         public OrderBuilder id(Long id){
             this.id = id;
-            return this;
-        }
-
-        public OrderBuilder emailSent(boolean emailSent){
-            this.emailSent = emailSent;
             return this;
         }
 
@@ -219,7 +201,7 @@ public class Order {
         }
 
         public Order build(){
-            return new Order(id,paymentId,date,email,amount,price,currency,status,metadata, emailSent);
+            return new Order(id,paymentId,date,email,amount,price,currency,status,metadata);
         }
     }
 }
