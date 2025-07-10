@@ -6,34 +6,34 @@ import java.util.List;
 
 public class Metadata {
 
-    private List<String> playerX;
-    private List<String> playerY;
-    private List<String> country;
+    private List<Long> playerX;
+    private List<Long> playerY;
+    private List<Long> country;
 
-    public Metadata(List<String> playerX, List<String> playerY, List<String> country) {
+    public Metadata(List<Long> playerX, List<Long> playerY, List<Long> country) {
         this.playerX = playerX;
         this.playerY = playerY;
         this.country = country;
     }
 
-    public List<String> getPlayerX() {
+    public List<Long> getPlayerX() {
         return playerX;
     }
-    public void setPlayerX(List<String> playerX) {
+    public void setPlayerX(List<Long> playerX) {
         this.playerX = playerX;
     }
 
-    public List<String> getPlayerY() {
+    public List<Long> getPlayerY() {
         return playerY;
     }
-    public void setPlayerY(List<String> playerY) {
+    public void setPlayerY(List<Long> playerY) {
         this.playerY = playerY;
     }
 
-    public List<String> getCountry() {
+    public List<Long> getCountry() {
         return country;
     }
-    public void setCountry(List<String> country) {
+    public void setCountry(List<Long> country) {
         this.country = country;
     }
 }

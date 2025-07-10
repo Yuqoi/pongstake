@@ -1,13 +1,12 @@
-package com.example.demo.dto;
+package com.example.demo.request;
 
-import com.example.demo.objects.Metadata;
-import com.example.demo.request.MetadataRequest;
 import com.example.demo.types.Currency;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-public class OrderDto {
+public class OrderRequest {
+
 
     @Email
     @NotNull
@@ -20,10 +19,10 @@ public class OrderDto {
     private Currency currency;
 
     @NotNull
-    private Metadata metadata;
+    private MetadataRequest metadata;
 
-    public OrderDto(){}
-    public OrderDto(String email, Long amount, Currency currency, Metadata metadata) {
+    public OrderRequest(){}
+    public OrderRequest(String email, Long amount, Currency currency, MetadataRequest metadata) {
         this.email = email;
         this.amount = amount;
         this.currency = currency;
@@ -51,10 +50,10 @@ public class OrderDto {
         this.currency = currency;
     }
 
-    public Metadata getMetadata() {
+    public MetadataRequest getMetadata() {
         return metadata;
     }
-    public void setMetadata(Metadata metadata) {
+    public void setMetadata(MetadataRequest metadata) {
         this.metadata = metadata;
     }
 }

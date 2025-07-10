@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 
 import com.example.demo.dto.OrderDto;
+import com.example.demo.request.OrderRequest;
 import com.example.demo.exceptions.ExpiredSessionNotFoundException;
 import com.example.demo.helpers.CalculateCost;
 import com.example.demo.model.Order;
@@ -9,7 +10,6 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.service.ICheckoutService;
 import com.example.demo.types.Status;
-import com.example.demo.util.OrderKafkaSender;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -35,36 +34,28 @@ public class CheckoutService implements ICheckoutService {
     String cancelUrl;
 
     @Autowired
-    private final PriceRepository priceRepository;
-
-    @Autowired
     private final OrderRepository orderRepository;
 
-    @Autowired
-    private final OrderKafkaSender orderKafkaSender;
-
-    public CheckoutService(PriceRepository priceRepository, OrderRepository orderRepository, OrderKafkaSender orderKafkaSender) {
-        this.priceRepository = priceRepository;
+    public CheckoutService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.orderKafkaSender = orderKafkaSender;
     }
 
     @Override
-    public String createCheckoutSession(OrderDto orderDto) throws StripeException {
+    public String createCheckoutSession(OrderDto orderRequest) throws StripeException {
 
-        Long totalAmount = CalculateCost.calculateCost(orderDto);
+        Long totalAmount = CalculateCost.calculateCost(orderRequest);
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setSuccessUrl(successUrl + "/{CHECKOUT_SESSION_ID}")
                 .setCancelUrl(cancelUrl)
-                .setCustomerEmail(orderDto.getEmail())
+                .setCustomerEmail(orderRequest.getEmail())
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
                                 .setQuantity(1L)
                                 .setPriceData(
                                         SessionCreateParams.LineItem.PriceData.builder()
-                                                .setCurrency(orderDto.getCurrency().name())
+                                                .setCurrency(orderRequest.getCurrency().name())
                                                 .setUnitAmount(totalAmount)
                                                 .setProductData(
                                                         SessionCreateParams.LineItem.PriceData.ProductData.builder()
@@ -75,18 +66,16 @@ public class CheckoutService implements ICheckoutService {
 
         Session session = Session.create(params);
         Order order = Order.builder()
-                .amount(orderDto.getAmount())
+                .amount(orderRequest.getAmount())
                 .price(session.getAmountTotal())
-                .metadata(orderDto.getMetadata())
+                .metadata(orderRequest.getMetadata())
                 .email(session.getCustomerEmail())
-                .currency(orderDto.getCurrency())
+                .currency(orderRequest.getCurrency())
                 .status(Status.WAITING)
                 .paymentId(session.getId())
                 .build();
 
         orderRepository.save(order);
-        String result = orderKafkaSender.send(order);
-        log.info("RESULT: {}", result);
 
         return session.getUrl();
     }
