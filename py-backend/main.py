@@ -30,16 +30,16 @@ if __name__ == '__main__':
             elif msg.error():
                 print("ERROR: %s".format(msg.error()))
             else:
-                key=msg.key().decode('utf-8')
+                key = msg.key().decode('utf-8')
                 data = json.loads(msg.value().decode('utf-8'))
 
-                playerX = data['playerX']
-                playerY = data['playerY']
-                country = data['country']
+                playerX = data['metadata']['playerX']
+                playerY = data['metadata']['playerY']
+                country = data['metadata']['country']
 
                 PlayerDetails = createPlayerDetailsDataFrame(playerX, playerY, country)
                 TestCase = createTestCaseDF(PlayerDetails, playerX, playerY, country)
-                predictOutput(TestCase)
+                print(predictOutput(TestCase))
 
     except KeyboardInterrupt:
         pass
