@@ -1,12 +1,8 @@
 package com.pongstake.notifications.model;
 
-import com.pongstake.notifications.type.IntArrayType;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
-
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Entity
 @Table(name = "predictions")

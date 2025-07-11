@@ -33,9 +33,7 @@ public class NotificationService {
     @Autowired
     private PredictionRepository predictionRepository;
 
-    @KafkaListener(
-            topics = "predictions_made",
-            groupId = "pongstake")
+    @KafkaListener(topics = "predictions_made", groupId = "pongstake")
     public void retrieveResults(String gottenResult){
         try {
             JsonNode actualObj = mapper.readTree(gottenResult);
@@ -57,7 +55,7 @@ public class NotificationService {
 
                 predictionRepository.saveAndFlush(prediction);
 
-
+                log.info("Everything saved for: {} id", prediction.getId());
             }else{
                 log.warn("Couldn't find an order: {}", orderId);
             }
