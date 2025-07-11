@@ -1,9 +1,14 @@
 package com.example.demo.model;
 
 import com.example.demo.objects.Metadata;
+import com.example.demo.request.MetadataRequest;
 import com.example.demo.types.Currency;
 import com.example.demo.types.Status;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,13 +66,14 @@ public class Order {
     @JdbcTypeCode(SqlTypes.JSON)
     private Metadata metadata;
 
+    @Column(name = "metadata_request")
     @NotNull
-    @Value("false")
-    @Column(name = "email_sent")
-    private boolean emailSent;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private MetadataRequest metadataRequest;
+
 
     private Order() {}
-    private Order(Long id, String paymentId, LocalDateTime date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata, boolean emailSent) {
+    public Order(Long id, String paymentId, LocalDateTime date, String email, Long amount, Long price, Currency currency, Status status, Metadata metadata, MetadataRequest metadataRequest) {
         this.id = id;
         this.paymentId = paymentId;
         this.date = date;
@@ -77,14 +83,14 @@ public class Order {
         this.currency = currency;
         this.status = status;
         this.metadata = metadata;
-        this.emailSent = emailSent;
+        this.metadataRequest = metadataRequest;
     }
 
-    public boolean isEmailSent() {
-        return emailSent;
+    public MetadataRequest getMetadataRequest() {
+        return metadataRequest;
     }
-    public void setEmailSent(boolean emailSent) {
-        this.emailSent = emailSent;
+    public void setMetadataRequest(MetadataRequest metadataRequest) {
+        this.metadataRequest = metadataRequest;
     }
 
     public Long getPrice() {
@@ -165,15 +171,15 @@ public class Order {
         private Currency currency;
         private Status status;
         private Metadata metadata;
-        private boolean emailSent;
+        private MetadataRequest metadataRequest;
 
-        public OrderBuilder id(Long id){
-            this.id = id;
+        public OrderBuilder metadataRequest(MetadataRequest metadataRequest){
+            this.metadataRequest = metadataRequest;
             return this;
         }
 
-        public OrderBuilder emailSent(boolean emailSent){
-            this.emailSent = emailSent;
+        public OrderBuilder id(Long id){
+            this.id = id;
             return this;
         }
 
@@ -216,7 +222,7 @@ public class Order {
         }
 
         public Order build(){
-            return new Order(id,paymentId,date,email,amount,price,currency,status,metadata, emailSent);
+            return new Order(id,paymentId,date,email,amount,price,currency,status,metadata,metadataRequest);
         }
     }
 }

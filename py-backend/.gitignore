@@ -1,0 +1,4 @@
+.idea
+.env
+ai_model.json
+__pycache__

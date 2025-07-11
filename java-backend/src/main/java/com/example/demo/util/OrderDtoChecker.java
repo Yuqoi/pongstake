@@ -1,16 +1,16 @@
 package com.example.demo.util;
 
-import com.example.demo.dto.OrderDto;
+import com.example.demo.request.OrderRequest;
 import com.example.demo.exceptions.InvalidFieldsException;
-import com.example.demo.objects.Metadata;
+import com.example.demo.request.MetadataRequest;
 
 public class OrderDtoChecker {
 
-    public static void validateOrderDto(OrderDto orderDto){
-        checkEmail(orderDto.getEmail());
-        checkAmount(orderDto.getAmount());
-        checkMetadataElements(orderDto.getMetadata());
-        checkIfElementsAreEqual(orderDto.getMetadata(), orderDto.getAmount());
+    public static void validateOrderDto(OrderRequest orderRequest){
+        checkEmail(orderRequest.getEmail());
+        checkAmount(orderRequest.getAmount());
+        checkMetadataElements(orderRequest.getMetadata());
+        checkIfElementsAreEqual(orderRequest.getMetadata(), orderRequest.getAmount());
     }
 
     private static void checkEmail(String email){
@@ -23,7 +23,7 @@ public class OrderDtoChecker {
             throw new InvalidFieldsException("Proper Amount is required");
         }
     }
-    private static void checkMetadataElements(Metadata metadata){
+    private static void checkMetadataElements(MetadataRequest metadata){
         if (metadata == null){
             throw new InvalidFieldsException("Metadata is null");
         }
@@ -37,7 +37,7 @@ public class OrderDtoChecker {
             throw new InvalidFieldsException("Country is empty or null");
         }
     }
-    private static void checkIfElementsAreEqual(Metadata metadata, long amount){
+    private static void checkIfElementsAreEqual(MetadataRequest metadata, long amount){
         long playerXLength = metadata.getPlayerX().size();
         long playerYLength = metadata.getPlayerY().size();
         long countryLenght = metadata.getCountry().size();

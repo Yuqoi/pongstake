@@ -2,8 +2,10 @@ package com.example.demo.controller;
 
 
 import com.example.demo.model.Order;
+import com.example.demo.objects.KafkaProducerMessage;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.types.Status;
+import com.example.demo.util.OrderKafkaSender;
 import com.stripe.model.Event;
 import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
@@ -29,9 +31,17 @@ public class StripeWebhookController {
     private String WEBHOOK_SECRET;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Transactional
+    @Autowired
+    private final OrderKafkaSender orderKafkaSender;
+
+    public StripeWebhookController(OrderRepository orderRepository, OrderKafkaSender orderKafkaSender) {
+        this.orderRepository = orderRepository;
+        this.orderKafkaSender = orderKafkaSender;
+    }
+
+
     @PostMapping
     public Map<String, String> handleWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader){
         Map<String, String> response = new HashMap<>();
@@ -54,8 +64,12 @@ public class StripeWebhookController {
                     order.setStatus(Status.COMPLETED);
                     orderRepository.saveAndFlush(order);
 
-                    log.info("Payment successful for session id: {}", sessionId);
+                    KafkaProducerMessage kpm = new KafkaProducerMessage(order.getId(), order.getMetadata());
+
+                    String result = orderKafkaSender.send(kpm);
+                    log.info("Payment successful for session id: {}\n and kafka result: {}", sessionId, result);
                     response.put("status", "Payment Successful for Session ID: " + sessionId);
+
                 }else{
                     response.put("status", "Payment not successful");
                 }
