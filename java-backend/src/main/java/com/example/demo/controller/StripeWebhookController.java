@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.model.Order;
+import com.example.demo.objects.KafkaProducerMessage;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.types.Status;
 import com.example.demo.util.OrderKafkaSender;
@@ -63,9 +64,12 @@ public class StripeWebhookController {
                     order.setStatus(Status.COMPLETED);
                     orderRepository.saveAndFlush(order);
 
-                    String result = orderKafkaSender.send(order);
+                    KafkaProducerMessage kpm = new KafkaProducerMessage(order.getId(), order.getMetadata());
+
+                    String result = orderKafkaSender.send(kpm);
                     log.info("Payment successful for session id: {}\n and kafka result: {}", sessionId, result);
                     response.put("status", "Payment Successful for Session ID: " + sessionId);
+
                 }else{
                     response.put("status", "Payment not successful");
                 }

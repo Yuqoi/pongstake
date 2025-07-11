@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 
 import com.example.demo.model.Order;
+import com.example.demo.objects.KafkaProducerMessage;
 import jakarta.annotation.PostConstruct;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -37,13 +38,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Order> kafkaTemplate() {
+    public KafkaTemplate<String, KafkaProducerMessage> kafkaTemplate() {
         return new KafkaTemplate<>(orderProducerFactory());
     }
 
     @Bean
-    public ProducerFactory<String, Order> orderProducerFactory() {
-        JsonSerializer<Order> userJsonSerializer = new JsonSerializer<Order>();
+    public ProducerFactory<String, KafkaProducerMessage> orderProducerFactory() {
+        JsonSerializer<KafkaProducerMessage> userJsonSerializer = new JsonSerializer<KafkaProducerMessage>();
         userJsonSerializer.setAddTypeInfo(false);
         return new DefaultKafkaProducerFactory<>(DEFAULT_PRODUCER_CONFIG_MAP, new StringSerializer(), userJsonSerializer);
     }

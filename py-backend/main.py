@@ -1,12 +1,19 @@
 import os
+import numpy
 from confluent_kafka import Consumer
 from dotenv import load_dotenv
 import json
+
+from KafkaProducerObject import KafkaProducerObject
 from model.InitModel import predictOutput
 from utils.CreateTestDataFrame import createTestCaseDF
 from utils.ManagePlayerDetails import createPlayerDetailsDataFrame
 
 load_dotenv()
+from confluent_kafka import Producer
+import socket
+
+from confluent_kafka.serialization import Serializer
 
 
 if __name__ == '__main__':
@@ -21,6 +28,12 @@ if __name__ == '__main__':
     topic = os.environ['topic_getter']
     consumer.subscribe([topic])
 
+    conf = {
+        'bootstrap.servers': os.environ['hostname'],
+        'client.id': socket.gethostname()
+    }
+
+    producer = Producer(conf)
 
     try:
         while True:
@@ -39,7 +52,15 @@ if __name__ == '__main__':
 
                 PlayerDetails = createPlayerDetailsDataFrame(playerX, playerY, country)
                 TestCase = createTestCaseDF(PlayerDetails, playerX, playerY, country)
-                print(predictOutput(TestCase))
+                result: numpy.ndarray = predictOutput(TestCase)
+                result = result.tolist()
+
+                kafkaProducerObject = KafkaProducerObject(orderId=data['orderId'], result=result)
+                serialized = kafkaProducerObject.__dict__
+                serialized = json.dumps(serialized).encode('utf-8')
+                
+                producer.produce("predictions_made", key=key, value=serialized)
+
 
     except KeyboardInterrupt:
         pass
