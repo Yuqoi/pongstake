@@ -58,7 +58,7 @@ if __name__ == '__main__':
                 kafkaProducerObject = KafkaProducerObject(orderId=data['orderId'], result=result)
                 serialized = kafkaProducerObject.__dict__
                 serialized = json.dumps(serialized).encode('utf-8')
-                
+
                 producer.produce("predictions_made", key=key, value=serialized)
 
 
