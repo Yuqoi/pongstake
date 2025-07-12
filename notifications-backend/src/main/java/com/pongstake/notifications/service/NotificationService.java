@@ -51,7 +51,7 @@ public class NotificationService {
                 Prediction prediction = new Prediction();
 
                 prediction.setResult(convertedList);
-                prediction.setOrderId(order.getId());
+                prediction.setOrder(order);
 
                 predictionRepository.saveAndFlush(prediction);
 

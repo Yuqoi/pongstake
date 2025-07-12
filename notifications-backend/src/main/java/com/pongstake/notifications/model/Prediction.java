@@ -13,10 +13,9 @@ public class Prediction {
     @Column(name = "id")
     private long id;
 
-    @JoinColumn(name = "order_id", referencedColumnName = "id", unique = true)
-    @NotNull
-    private Long orderId;
-
+    @OneToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Order order;
 
     @Column(name = "results", columnDefinition = "integer[]")
     private Integer[] result;
@@ -27,9 +26,8 @@ public class Prediction {
     private boolean emailSent;
 
     public Prediction() {}
-    public Prediction(long id, Long orderId, Integer[] result, boolean emailSent) {
-        this.id = id;
-        this.orderId = orderId;
+    public Prediction(Order order, Integer[] result, boolean emailSent) {
+        this.order = order;
         this.result = result;
         this.emailSent = emailSent;
     }
@@ -41,12 +39,8 @@ public class Prediction {
         this.id = id;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
+    public Order getOrder() {return order;}
+    public void setOrder(Order order) {this.order = order;}
 
     public Integer[] getResult() {
         return result;

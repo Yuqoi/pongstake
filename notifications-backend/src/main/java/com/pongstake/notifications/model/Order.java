@@ -20,11 +20,21 @@ public class Order {
     @Email
     private String email;
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private Prediction prediction;
 
     public Order() { }
-    public Order(Long id, String email) {
+    public Order(Long id, String email, Prediction prediction) {
         this.id = id;
         this.email = email;
+        this.prediction = prediction;
+    }
+
+    public Prediction getPrediction() {
+        return prediction;
+    }
+    public void setPrediction(Prediction prediction) {
+        this.prediction = prediction;
     }
 
     public Long getId() {
